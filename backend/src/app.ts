@@ -3,7 +3,6 @@ import cors from 'cors'
 import cookieParser from 'cookie-parser'
 import middleware from './utils/middleware'
 import authRouter from './routers/auth.route'
-import userRouter from './routers/user.route'
 import confessionRouter from './routers/confession.route'
 
 const app = express()
@@ -13,7 +12,6 @@ app.use(cors())
 app.use(cookieParser())
 
 // Routes
-app.use('/api/user', userRouter)
 app.use('/api/confession', confessionRouter)
 app.use('/api/auth', authRouter)
 
