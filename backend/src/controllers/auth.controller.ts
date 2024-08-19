@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import userService from "../services/user.service";
 import { ApiError } from "../utils/error";
 import { httpStatus } from "../utils/http";
-import { hashPassword } from "../utils/lib/hashing";
+import { comparePassword, hashPassword } from "../utils/lib/hashing";
 import { generateAccessToken, generateRefreshToken } from "../utils/lib/token";
 
 const register = async (request: Request, response: Response, next: NextFunction) => {
@@ -52,6 +52,10 @@ const login = async (request: Request, response: Response, next: NextFunction) =
 
     if (!isExistingUser) throw new ApiError(httpStatus.BAD_REQUEST, 'Username does not exists.')
 
+    const isPasswordMatch = await comparePassword(password, isExistingUser.password)
+
+    if (!isPasswordMatch) throw new ApiError(httpStatus.BAD_REQUEST, 'Wrong password.')
+
     // generate token for user
 
     const accessToken = generateAccessToken(isExistingUser.id, isExistingUser.username)
@@ -63,7 +67,7 @@ const login = async (request: Request, response: Response, next: NextFunction) =
       maxAge: 24 * 60 * 60 * 1000
     })
 
-    return response.status(httpStatus.OK).json({token: accessToken})
+    return response.status(httpStatus.OK).json({username, token: accessToken})
   } catch (error) {
     next(error)
   }
