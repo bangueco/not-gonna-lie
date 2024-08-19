@@ -3,19 +3,36 @@ import confessionService from "../services/confession.service";
 import { ApiError } from "../utils/error";
 import { httpStatus } from "../utils/http";
 
+const getConfessions = async (request: Request, response: Response, next: NextFunction) => {
+  const id = request.params.id
+
+  if (!id) {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'User id not specified.')
+  }
+
+  try {
+    const userConfessions = await confessionService.getConfessionsForUser(parseInt(id))
+    if (!userConfessions) throw new ApiError(httpStatus.BAD_REQUEST, 'Invalid user id.')
+    return response.status(httpStatus.OK).json(userConfessions)
+  } catch (error) {
+    next(error)
+  }
+}
+
 const confess = async (request: Request, response: Response, next: NextFunction) => {
-  const {confession, id} = request.body
+  const {confession, userId} = request.body
+
 
   if (!confession) {
     throw new ApiError(httpStatus.BAD_REQUEST, 'Confession field is required.')
   }
 
-  if (!id) {
+  if (!userId) {
     throw new ApiError(httpStatus.BAD_REQUEST, 'User id not found.')
   }
 
   try {
-    const insertConfession = await confessionService.createConfession(confession, id)
+    const insertConfession = await confessionService.createConfession(confession, parseInt(userId))
     return response.status(httpStatus.OK).json(insertConfession)
   } catch (error) {
     next(error)
@@ -36,6 +53,7 @@ const deleteConfession = async (request: Request, response: Response, next: Next
 }
 
 export default {
+  getConfessions,
   confess,
   deleteConfession
 }
