@@ -7,10 +7,14 @@ import { generateAccessToken, generateRefreshToken } from "../utils/lib/token";
 
 const register = async (request: Request, response: Response, next: NextFunction) => {
   
-  const {username, password} = request.body
+  const {fullname, username, password} = request.body
 
   try {
     // check for fields
+    if (!fullname) {
+      throw new ApiError(httpStatus.BAD_REQUEST, 'Fullname field is required.')
+    }
+
     if (!username) {
       throw new ApiError(httpStatus.BAD_REQUEST, 'Username field is required.')
     }
@@ -27,7 +31,7 @@ const register = async (request: Request, response: Response, next: NextFunction
 
     const hashedPassword = await hashPassword(password)
 
-    const credentials = await userService.create(username, hashedPassword)
+    const credentials = await userService.create(fullname, username, hashedPassword)
     return response.status(httpStatus.CREATED).json(credentials)
 
   } catch (error: unknown) {
@@ -67,7 +71,13 @@ const login = async (request: Request, response: Response, next: NextFunction) =
       maxAge: 24 * 60 * 60 * 1000
     })
 
-    return response.status(httpStatus.OK).json({username, token: accessToken})
+    return response.status(httpStatus.OK).json({
+      id: isExistingUser.id, 
+      fullname: isExistingUser.fullname, 
+      username, 
+      token: accessToken
+    })
+    
   } catch (error) {
     next(error)
   }
