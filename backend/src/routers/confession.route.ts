@@ -7,4 +7,6 @@ confessionRouter.route('/')
   .post(confessionController.confess)
   .delete(confessionController.deleteConfession)
 
+confessionRouter.get('/:id', confessionController.getConfessions)
+
 export default confessionRouter
