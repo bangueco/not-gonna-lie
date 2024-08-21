@@ -4,6 +4,7 @@ import cookieParser from 'cookie-parser'
 import middleware from './utils/middleware'
 import authRouter from './routers/auth.route'
 import confessionRouter from './routers/confession.route'
+import userRouter from './routers/user.route'
 
 const app = express()
 
@@ -13,6 +14,7 @@ app.use(cookieParser())
 
 // Routes
 app.use('/api/confession', confessionRouter)
+app.use('/api/user', userRouter)
 app.use('/api/auth', authRouter)
 
 // Middleware
