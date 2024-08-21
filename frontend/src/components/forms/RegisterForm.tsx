@@ -16,6 +16,7 @@ import { useState } from "react";
 export default function RegisterForm() {
   const navigate = useNavigate()
   
+  const [fullname, setFullName] = useState<string>('')
   const [username, setUsername] = useState<string>('')
   const [password, setPassword] = useState<string>('')
 
@@ -27,7 +28,7 @@ export default function RegisterForm() {
         },
         mode:'cors',
         method: "POST",
-        body: JSON.stringify({username, password})
+        body: JSON.stringify({fullname, username, password})
       })
 
       if (!response.ok) {
@@ -40,7 +41,7 @@ export default function RegisterForm() {
       return navigate('/login')
       
     } catch (error) {
-      console.error(error)
+      alert(error)
     }
   }
 
@@ -51,7 +52,11 @@ export default function RegisterForm() {
         <CardDescription>Sign up now to receive anonymous confessions!</CardDescription>
       </CardHeader>
       <CardContent>
-        <div>
+        <div className="mt-5">
+          <Label htmlFor="fullname">Full Name</Label>
+          <Input onChange={(e) => setFullName(e.target.value)} className="mt-2" id="fullname" name="fullname" />
+        </div>
+        <div className="mt-5">
           <Label htmlFor="username">Username</Label>
           <Input onChange={(e) => setUsername(e.target.value)} className="mt-2" id="username" name="username" />
         </div>
