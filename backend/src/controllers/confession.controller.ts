@@ -21,17 +21,17 @@ const getConfessions = async (request: Request, response: Response, next: NextFu
 
 const confess = async (request: Request, response: Response, next: NextFunction) => {
   const {confession, userId} = request.body
-
-
-  if (!confession) {
-    throw new ApiError(httpStatus.BAD_REQUEST, 'Confession field is required.')
-  }
-
-  if (!userId) {
-    throw new ApiError(httpStatus.BAD_REQUEST, 'User id not found.')
-  }
-
+  
   try {
+
+    if (!confession) {
+      throw new ApiError(httpStatus.BAD_REQUEST, 'Confession field is required.')
+    }
+  
+    if (!userId) {
+      throw new ApiError(httpStatus.BAD_REQUEST, 'User id not found.')
+    }
+
     const insertConfession = await confessionService.createConfession(confession, parseInt(userId))
     return response.status(httpStatus.OK).json(insertConfession)
   } catch (error) {
