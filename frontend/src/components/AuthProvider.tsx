@@ -24,6 +24,6 @@ export default function AuthProvider({children}: AuthProps) {
   return (
     auth 
     ? <AuthContext.Provider value={auth}>{children}</AuthContext.Provider>
-    : <></>
+    : <div>{children}</div>
   )
 }
